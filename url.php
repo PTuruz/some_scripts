@@ -24,21 +24,29 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                 $html = file_get_contents($urls[$j]);
                 
                 //Regex for get href content
-                $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
+                $regexp = "<a\s[^>]*href=(\"|'??)([^\"|' >]*?)\\1[^>]*>(.*)<\/a>";
 
                 //Get href and add it to $matches array
                 preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER);
 
                 //Check o parameter for print data
                 if($_GET["o"]=='stdout'){
+                    $data_per_page=array();
                     foreach($matches as $url) {
 
                         //If URL start with '/' then add domain for full URL
                         if(!str_starts_with($url[2], 'http')){
-                            $url[2]=rtrim($urls[$j], '/').$url[2] ;
+                            $url[2]=rtrim($urls[$j], '/').'/'.ltrim($url[2], '/') ;
                         }
-                    //Output data per line   
-                    echo $url[2]."</br>";
+                        //Add data to array 
+                        array_push($data_per_page,trim($url[2]),'"');
+                        echo $url[2].'<br/>';
+                    }
+                    //make array unique
+                    $data_per_page=array_unique($data_per_page);
+                    //print data
+                    foreach($data_per_page as $key => $value){
+                        echo "$value<br>";
                     }
                 }
                 else{//json output
@@ -49,14 +57,18 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                             $parse_url = parse_url($urls[$j]);
                         }
                         $hostname=$parse_url['scheme'].'://'.$parse_url['host'];
-                        $path='/'.trim($matches[$i][2], $hostname);
+                        //check empty urls
+                        if(trim($matches[$i][2], $hostname)!=null){
+                            $path='/'.trim($matches[$i][2], $hostname);
 
-                        //Chek if array(hostname alredy) exist and add paths
-                        if(isset($json_data[$hostname])){
-                            $json_data[$hostname][count($json_data[$hostname])]=$path;
-                        }
-                        else{
-                            $json_data[$hostname][0]=$path;
+                            //Chek if array(hostname alredy) exist and add paths
+                            if(isset($json_data[$hostname])){
+                                $json_data[$hostname][count($json_data[$hostname])]=$path;
+                                $json_data[$hostname]=array_unique($json_data[$hostname]);
+                            }
+                            else{
+                                $json_data[$hostname][0]=trim($path,"'");
+                            }
                         }
                     }
                     header('Content-Type: application/json; charset=utf-8');
