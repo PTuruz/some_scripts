@@ -118,7 +118,7 @@ function starts_with($string,$substring){
     if (strpos($string, $substring) === 0) {
         return(TRUE);
     } else {
-        return(FALSE)
+        return(FALSE);
     }
 }
 ?>
