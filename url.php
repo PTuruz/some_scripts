@@ -4,6 +4,25 @@
 //Example 2 url.php?u[]=https://google.com&u[]=https://google.org&o=json
 
 //Check input(GET) parameters exist 
+foreach ($argv as $arg) {
+    $e=explode("=",$arg);
+    if(count($e)==2){
+        if($e[0]=='u'){
+          if(isset($_GET['u'])){
+                array_push($_GET['u'],$e[1]);
+           }
+           else{
+             $_GET['u'][0]=$e[1];
+           }
+        }
+        else {
+          $_GET[$e[0]]=$e[1];
+        }
+    }
+    else
+        $_GET[$e[0]]=0;
+}
+
 if(isset($_GET["u"]) && isset($_GET["o"])){
 
     //Check if many URLs
