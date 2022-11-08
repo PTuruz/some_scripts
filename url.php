@@ -1,9 +1,11 @@
-<?php 
+<?php
 //The script provide all URLs from given url per line or json format
 //Example 1 url.php?u=https://google.com&o=stdout
 //Example 2 url.php?u[]=https://google.com&u[]=https://google.org&o=json
 
-//Check input(GET) parameters exist 
+//Check input(GET) parameters exist
+
+error_reporting(E_ERROR | E_PARSE);
 foreach ($argv as $arg) {
     $e=explode("=",$arg);
     if(count($e)==2){
@@ -23,6 +25,10 @@ foreach ($argv as $arg) {
         $_GET[$e[0]]=0;
 }
 
+//var_dump($_GET);
+
+
+
 if(isset($_GET["u"]) && isset($_GET["o"])){
 
     //Check if many URLs
@@ -35,13 +41,13 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
 
     for($j=0;$j < count($urls) ; $j++){
 
-            //Check u parameter validation 
+            //Check u parameter validation
         if (filter_var($urls[$j], FILTER_VALIDATE_URL) !== FALSE){
 
-            //Check o parameter validation 
+            //Check o parameter validation
             if ($_GET["o"]=='stdout' || $_GET["o"]=='json'){
                 $html = file_get_contents($urls[$j]);
-                
+
                 //Regex for get href content
                 $regexp = "<a\s[^>]*href=(\"|'??)([^\"|' >]*?)\\1[^>]*>(.*)<\/a>";
 
@@ -57,7 +63,7 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                         if(!str_starts_with($url[2], 'http')){
                             $url[2]=rtrim($urls[$j], '/').'/'.ltrim($url[2], '/') ;
                         }
-                        //Add data to array 
+                        //Add data to array
                         array_push($data_per_page,trim($url[2]),'"');
                         echo $url[2].'<br/>';
                     }
@@ -93,7 +99,7 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                     header('Content-Type: application/json; charset=utf-8');
                     echo json_encode($json_data,JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
                 }
-                
+
             }
             else {
                 echo "The 'o' parameters can have only values 'stdout' or 'json'";
