@@ -71,7 +71,7 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                     $data_per_page=array_unique($data_per_page);
                     //print data
                     foreach($data_per_page as $key => $value){
-                        echo "$value<br>";
+                        echo $value."\r\n";
                     }
                 }
                 else{//json output
