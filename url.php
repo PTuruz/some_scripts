@@ -65,7 +65,6 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                         }
                         //Add data to array
                         array_push($data_per_page,trim($url[2]),'"');
-                        echo $url[2].'<br/>';
                     }
                     //make array unique
                     $data_per_page=array_unique($data_per_page);
