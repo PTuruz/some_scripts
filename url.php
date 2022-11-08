@@ -60,7 +60,7 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
                     foreach($matches as $url) {
 
                         //If URL start with '/' then add domain for full URL
-                        if(!str_starts_with($url[2], 'http')){
+                        if(!starts_with($url[2], 'http')){//see function comments
                             $url[2]=rtrim($urls[$j], '/').'/'.ltrim($url[2], '/') ;
                         }
                         //Add data to array
@@ -112,5 +112,13 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
 }
 else {
     echo "Please give 'u' and 'o' GET parameters";
+}
+//This part for old version < PHP 8 for PHP8 and new version use str_starts_with instend of starts_with
+function starts_with($string,$substring){
+    if (strpos($string, $substring) === 0) {
+        return(TRUE);
+    } else {
+        return(FALSE)
+    }
 }
 ?>
