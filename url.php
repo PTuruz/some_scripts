@@ -110,7 +110,7 @@ if(isset($_GET["u"]) && isset($_GET["o"])){
     }
 }
 else {
-    echo "Please give 'u' and 'o' GET parameters";
+    echo "Please give 'u' and 'o' parameters";
 }
 //This part for old version < PHP 8 for PHP8 and new version use str_starts_with instend of starts_with
 function starts_with($string,$substring){
